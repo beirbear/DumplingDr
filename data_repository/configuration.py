@@ -15,10 +15,10 @@ class Setting(object):
 
     @staticmethod
     def read_configuration_from_file():
-        with open('../configuration.json', 'rt') as rt:
+        with open('configuration.json', 'rt') as rt:
             s_from_file = eval(rt.read())
             if 'rest_addr' in s_from_file and \
-               'rest_report' in s_from_file and \
+               'rest_port' in s_from_file and \
                'mongodb_setting' in s_from_file and \
                'token' in s_from_file:
                 if 'connection_string' in s_from_file['mongodb_setting'] and \
