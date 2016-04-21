@@ -34,7 +34,7 @@ class MetaStorage(object):
 
     def get_all_features(self):
         cursor = self.__db[Setting.get_table_name()].find()
-        return [item['features'] for item in cursor]
+        return [(item['id'], item['features']) for item in cursor]
 
     def get_all_data(self):
         cursor = self.__db[Setting.get_table_name()].find()
