@@ -1,10 +1,48 @@
-class Setting:
-    __com_addr = 'localhost'
-    __com_port = 8100
+
+
+class Setting(object):
+    # REST Setting
+    __com_addr = '130.238.29.141'
+    __com_port = 8080
+
+    # Mongodb Setting
+    __db_connection_string = 'mongodb://130.238.29.141:27017/'
     __db_name = 'meta_stream'
     __table_name = 'meta_data'
-    __db_connection_string = 'mongodb://localhost:27017/'
-    __dynamic_token = "None"
+    __table_tree_name = 'meta_tree'
+    __table_tree_score_name = 'meta_tree_score'
+    __dynamic_token = 'None'
+
+    @staticmethod
+    def read_configuration_from_file():
+        with open('configuration.json','rt') as rt:
+            s_from_file = eval(rt.read())
+            if 'rest_addr' in s_from_file and \
+               'rest_report' in s_from_file and \
+               'mongodb_setting' in s_from_file and \
+               'token' in s_from_file:
+                if 'connection_string' in s_from_file['mongodb_setting'] and \
+                   'db_name' in s_from_file['mongodb_setting'] and \
+                   'db_features' in s_from_file['mongodb_setting'] and \
+                   'db_tree' in s_from_file['mongodb_setting'] and \
+                   'db_tree_score' in s_from_file['mongodb_setting']:
+
+                    # Assign setting from file
+                    try:
+                        Setting.__com_addr = s_from_file['rest_addr']
+                        Setting.__com_port = int(s_from_file['rest_port'])
+                        Setting.__dynamic_token = s_from_file['token']
+                        Setting.__db_connection_string = s_from_file['mongodb_setting']['connection_string']
+                        Setting.__db_name = s_from_file['mongodb_setting']['db_name']
+                        Setting.__table_name = s_from_file['mongodb_setting']['db_features']
+                        Setting.__table_tree_name = s_from_file['mongodb_setting']['db_tree']
+                        Setting.__table_tree_score_name = s_from_file['mongodb_setting']['db_tree_score']
+                    except Exception as e:
+                        raise Exception("Error: " + e)
+                else:
+                    raise Exception("There are something wrong in setting in mongodb_setting in configuration.json")
+            else:
+                raise Exception("There are something wrong in parameter names in configuration.json");
 
     @staticmethod
     def get_com_addr():
@@ -30,68 +68,57 @@ class Setting:
     def get_token():
         return Setting.__dynamic_token
 
-    __service_path = 'dataRepository'
 
-    @staticmethod
-    def get_string_service_path():
-        return Setting.__service_path
+class Definitions(object):
 
+    class Rest(object):
 
-class Definitions:
-    __command_dump_features = 'get_features'
-    __command_count_features = 'count'
-    __command = 'command'
-    __token = 'token'
-    __id = 'id'
-    __realization = 'realizations'
-    __label = 'label'
-    __created_by = 'created_by'
+        @staticmethod
+        def get_string_service_path():
+            return 'dataRepository'
 
-    @staticmethod
-    def get_string_dump_features():
-        return Definitions.__command_dump_features
+        @staticmethod
+        def get_string_dump_features():
+            return 'get_features'
 
-    @staticmethod
-    def get_string_count_features():
-        return Definitions.__command_count_features
+        @staticmethod
+        def get_string_count_features():
+            return 'count'
 
-    @staticmethod
-    def get_string_req_command():
-        return Definitions.__command
+        @staticmethod
+        def get_string_req_command():
+            return 'command'
 
-    @staticmethod
-    def get_string_request_token():
-        return Definitions.__token
+        @staticmethod
+        def get_string_request_token():
+            return 'token'
 
-    @staticmethod
-    def get_string_id():
-        return Definitions.__id
+        @staticmethod
+        def get_string_id():
+            return 'id'
 
-    @staticmethod
-    def get_string_realization():
-        return Definitions.__realization
+        @staticmethod
+        def get_string_realization():
+            return 'realizations'
 
-    @staticmethod
-    def get_string_label():
-        return Definitions.__label
+        @staticmethod
+        def get_string_label():
+            return 'label'
 
-    @staticmethod
-    def get_string_maker():
-        return Definitions.__created_by
+        @staticmethod
+        def get_string_maker():
+            return 'created_by'
 
-    class Feature:
-        __feature = 'features'
-        __parameter = 'parameters'
-        __time_for_mapper = 'time for mapper (s)'
+    class Feature(object):
 
         @staticmethod
         def get_string_feature():
-            return Definitions.Feature.__feature
+            return 'features'
 
         @staticmethod
         def get_string_parameter():
-            return Definitions.Feature.__parameter
+            return 'parameters'
 
         @staticmethod
         def get_string_mapper_time():
-            return Definitions.Feature.__time_for_mapper
+            return 'time for mapper (s)'

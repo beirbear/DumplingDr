@@ -9,6 +9,5 @@ def main():
     pool = ThreadPoolExecutor()
     pool.submit(run_rest_service)
 
-
 if __name__ == '__main__':
     main()

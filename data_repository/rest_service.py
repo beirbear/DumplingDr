@@ -1,12 +1,10 @@
 import falcon
-from .configuration import Definitions, Setting
+from .configuration import Definitions as df, Setting
 
 
 class DataObject(object):
     def __init__(self, meta_storage):
         self.__meta_storage = meta_storage
-        self.__requested_call = 0
-        pass
 
     def on_get(self, req, res):
         """
@@ -15,26 +13,30 @@ class DataObject(object):
         GET: /dataRepository?token={None}&command={get_features}
 
         """
-        token_value = req.params[Definitions.get_string_request_token()].strip()
+
+        token_value = req.params[df.Rest.get_string_request_token()].strip()
 
         if token_value == Setting.get_token() and \
-            Definitions.get_string_req_command() not in req.params:
+           df.Rest.get_string_req_command() not in req.params:
             res.body = str(self.__meta_storage.get_all_data())
             res.content_type = "String"
             res.status = falcon.HTTP_200
-        elif Definitions.get_string_req_command() in req.params and \
-             req.params[Definitions.get_string_req_command()] == Definitions.get_string_count_features():
+
+        elif df.Rest.get_string_req_command() in req.params and \
+             req.params[df.Rest.get_string_req_command()] == df.Rest.get_string_count_features():
 
             # Count feature
             res.body = "Total records:" + str(self.__meta_storage.count_records())
             res.content_type = "String"
             res.status = falcon.HTTP_200
-        elif Definitions.get_string_req_command() in req.params and \
-             req.params[Definitions.get_string_req_command()] == Definitions.get_string_dump_features():
+
+        elif df.Rest.get_string_req_command() in req.params and \
+             req.params[df.Rest.get_string_req_command()] == df.Rest.get_string_dump_features():
 
             res.body = str(self.__meta_storage.get_all_features())
             res.content_type = "String"
             res.status = falcon.HTTP_200
+
         else:
             res.body = "Invalid token ID."
             res.content_type = "String"
@@ -47,20 +49,22 @@ class DataObject(object):
               Body = {Feature Content}
         """
         # parse the parameters
-        token = req.params[Definitions.get_string_request_token()].strip()
-        realization = req.params[Definitions.get_string_realization()].strip()
-        _id = req.params[Definitions.get_string_id()].strip()
-        label = req.params[Definitions.get_string_label()].strip()
-        maker = req.params[Definitions.get_string_maker()].strip()
+        token = req.params[df.Rest.get_string_request_token()].strip()
+        realization = req.params[df.Rest.get_string_realization()].strip()
+        _id = req.params[df.Rest.get_string_id()].strip()
+        label = req.params[df.Rest.get_string_label()].strip()
+        maker = req.params[df.Rest.get_string_maker()].strip()
 
         if token != Setting.get_token():
             res.body = "Invalid token ID."
             res.content_type = "String"
             res.status = falcon.HTTP_401
+
         elif not len(realization) and not len(_id) and not len(label) and not len(maker):
             res.body = "Incomplete data for some required parameters."
             res.content_type = "String"
             res.status = falcon.HTTP_400
+
         else:
             content = req.stream.read().decode('utf-8')
             if not len(content):
@@ -70,12 +74,10 @@ class DataObject(object):
             else:
                 # Push data into database
                 if self.__meta_storage.set_meta_by_key(_id,
-                                                    content, # Features
-                                                    realization,
-                                                    label,
-                                                    maker):
-                    self.__requested_call += 1
-                    print("Requested Call", self.__requested_call)
+                                                       content, # Features
+                                                       realization,
+                                                       label,
+                                                       maker):
                     res.body = "Insert feature complete."
                     res.content_type = "String"
                     res.status = falcon.HTTP_200
@@ -91,7 +93,7 @@ class DataObject(object):
         """
         DELETE: /dataRepository?token={None}
         """
-        token = req.params[Definitions.get_string_request_token()].strip()
+        token = req.params[df.Rest.get_string_request_token()].strip()
         if token != Setting.get_token():
             res.body = "Invalid token ID."
             res.content_type = "String"
@@ -110,7 +112,7 @@ class RESTService(object):
         from .meta_storage import MetaStorage
         meta_storage = MetaStorage()
         api = falcon.API()
-        api.add_route('/' + Setting.get_string_service_path(), DataObject(meta_storage))
+        api.add_route('/' + df.Rest.get_string_service_path(), DataObject(meta_storage))
         self.__server = make_server(Setting.get_com_addr(), Setting.get_com_port(), api)
 
     def run(self):
