@@ -5,6 +5,10 @@ def run_rest_service():
 
 
 def main():
+    # Update configuration from local file
+    from .configuration import Setting
+    Setting.read_configuration_from_file()
+
     from concurrent.futures import ThreadPoolExecutor
     pool = ThreadPoolExecutor()
     pool.submit(run_rest_service)
