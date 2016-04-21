@@ -2,11 +2,11 @@
 
 class Setting(object):
     # REST Setting
-    __com_addr = '130.238.29.141'
+    __com_addr = '10.0.10.248'
     __com_port = 8080
 
     # Mongodb Setting
-    __db_connection_string = 'mongodb://130.238.29.141:27017/'
+    __db_connection_string = 'mongodb://localhost:27017/'
     __db_name = 'meta_stream'
     __table_name = 'meta_data'
     __table_tree_name = 'meta_tree'
@@ -15,7 +15,7 @@ class Setting(object):
 
     @staticmethod
     def read_configuration_from_file():
-        with open('configuration.json', 'rt') as rt:
+        with open('../configuration.json', 'rt') as rt:
             s_from_file = eval(rt.read())
             if 'rest_addr' in s_from_file and \
                'rest_report' in s_from_file and \
