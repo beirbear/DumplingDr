@@ -57,11 +57,11 @@ class DataObject(object):
         label = req.params[df.Rest.get_string_label()].strip()
         maker = req.params[df.Rest.get_string_maker()].strip()
 
-        print ("Token:", token)
-        print ("Realization", realization)
-        print ("_id", _id)
-        print ("label", label)
-        print ("maker", maker)
+        print("Token:", token)
+        print("Realization: ", realization)
+        print("_id: ", _id)
+        print("label: ", label)
+        print("maker: ", maker)
 
         if token != Setting.get_token():
             res.body = "Invalid token ID."
@@ -75,7 +75,10 @@ class DataObject(object):
 
         else:
             # Push features into the database
-            content = req.stream.read().decode('utf-8')
+            content = req.stream.read()
+            with open(Setting.get_local_storage() + '/' + str(_id) + ".p.zip", 'wb') as w:
+                w.write(content)
+
             if not len(content):
                 res.body = "Feature content is required."
                 res.content_type = "String"

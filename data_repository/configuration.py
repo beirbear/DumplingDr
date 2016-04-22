@@ -27,7 +27,7 @@ class Setting(object):
                    'db_features' in s_from_file['mongodb_setting'] and \
                    'db_tree' in s_from_file['mongodb_setting'] and \
                    'db_meta' in s_from_file['mongodb_setting'] and \
-                   'db_storage' in s_from_file['mongodb_Setting']:
+                   'db_storage' in s_from_file['mongodb_setting']:
 
                     # Assign setting from file
                     try:
