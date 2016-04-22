@@ -3,10 +3,11 @@
   "rest_port": 8080,
   "mongodb_setting": {
     "connection_string": "mongodb://localhost:27017/",
-    "db_name": "meta_stream",
-    "db_features": "meta_data",
-    "db_tree": "meta_tree",
-    "db_tree_score": "meta_tree_score"
+    "db_name": "parameter_sweep",
+    "db_features": "features",
+    "db_tree": "tree",
+    "db_meta": "meta",
+    "db_storage": "/home/ubuntu/storage"
   },
   "token": "None"
 }

@@ -36,7 +36,7 @@ class MetaStorage(object):
         cursor = self.__db[Setting.get_table_name()].find()
         out = {}
         for item in cursor:
-            out[item['id']] = item['features']
+            out[int(item['id'])] = item['features']
         return out
         # return [(item['id'], item['features']) for item in cursor]
 

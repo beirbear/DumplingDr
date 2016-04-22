@@ -10,8 +10,9 @@ class Setting(object):
     __db_name = 'meta_stream'
     __table_name = 'meta_data'
     __table_tree_name = 'meta_tree'
-    __table_tree_score_name = 'meta_tree_score'
+    __table_meta_name = 'meta_tree_score'
     __dynamic_token = 'None'
+    __db_storage = ''
 
     @staticmethod
     def read_configuration_from_file():
@@ -25,7 +26,8 @@ class Setting(object):
                    'db_name' in s_from_file['mongodb_setting'] and \
                    'db_features' in s_from_file['mongodb_setting'] and \
                    'db_tree' in s_from_file['mongodb_setting'] and \
-                   'db_tree_score' in s_from_file['mongodb_setting']:
+                   'db_meta' in s_from_file['mongodb_setting'] and \
+                   'db_storage' in s_from_file['mongodb_Setting']:
 
                     # Assign setting from file
                     try:
@@ -36,7 +38,9 @@ class Setting(object):
                         Setting.__db_name = s_from_file['mongodb_setting']['db_name']
                         Setting.__table_name = s_from_file['mongodb_setting']['db_features']
                         Setting.__table_tree_name = s_from_file['mongodb_setting']['db_tree']
-                        Setting.__table_tree_score_name = s_from_file['mongodb_setting']['db_tree_score']
+                        Setting.__table_meta_name = s_from_file['mongodb_setting']['db_meta']
+                        Setting.__db_storage = s_from_file['mongodb_setting']['db_storage']
+
                     except Exception as e:
                         raise Exception("Error: " + e)
                 else:
@@ -67,6 +71,10 @@ class Setting(object):
     @staticmethod
     def get_token():
         return Setting.__dynamic_token
+
+    @staticmethod
+    def get_local_storage():
+        return Setting.__db_storage
 
 
 class Definitions(object):
@@ -122,3 +130,90 @@ class Definitions(object):
         @staticmethod
         def get_string_mapper_time():
             return 'time for mapper (s)'
+
+    class MongoDB(object):
+
+        class Features(object):
+            @staticmethod
+            def get_string_id():
+                return 'id'
+
+            @staticmethod
+            def get_string_previous_id():
+                return '_id'
+
+            @staticmethod
+            def get_string_feature_path():
+                return 'feature_path'
+
+            @staticmethod
+            def get_string_realization_path():
+                return 'realization_path'
+
+            @staticmethod
+            def get_string_created_by():
+                return 'created_by'
+
+            @staticmethod
+            def get_string_created_date():
+                return 'created_date'
+
+            @staticmethod
+            def get_string_is_labeled():
+                return 'is_labeled'
+
+            @staticmethod
+            def get_string_is_enabled():
+                return 'is_enabled'
+
+        class Tree(object):
+            @staticmethod
+            def get_string_parent():
+                return 'parent'
+
+            @staticmethod
+            def get_string_left_child():
+                return 'left_child'
+
+            @staticmethod
+            def get_string_right_child():
+                return 'right_child'
+
+            @staticmethod
+            def get_string_proximity():
+                return 'proximity'
+
+            @staticmethod
+            def get_string_name():
+                return 'name'
+
+        class Meta(object):
+            @staticmethod
+            def get_string_name():
+                return 'name'
+
+            @staticmethod
+            def get_string_value():
+                return 'value'
+
+            @staticmethod
+            def get_string_last_update():
+                return 'last_update'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -18,20 +18,22 @@ class DataObject(object):
 
         if token_value == Setting.get_token() and \
            df.Rest.get_string_req_command() not in req.params:
+            # Get all data
             res.body = str(self.__meta_storage.get_all_data())
             res.content_type = "String"
             res.status = falcon.HTTP_200
 
         elif df.Rest.get_string_req_command() in req.params and \
              req.params[df.Rest.get_string_req_command()] == df.Rest.get_string_count_features():
+            # Get total number of records (count features)
 
-            # Count feature
             res.body = "Total records:" + str(self.__meta_storage.count_records())
             res.content_type = "String"
             res.status = falcon.HTTP_200
 
         elif df.Rest.get_string_req_command() in req.params and \
              req.params[df.Rest.get_string_req_command()] == df.Rest.get_string_dump_features():
+            # Get only features
 
             res.body = str(self.__meta_storage.get_all_features())
             res.content_type = "String"
@@ -55,6 +57,12 @@ class DataObject(object):
         label = req.params[df.Rest.get_string_label()].strip()
         maker = req.params[df.Rest.get_string_maker()].strip()
 
+        print ("Token:", token)
+        print ("Realization", realization)
+        print ("_id", _id)
+        print ("label", label)
+        print ("maker", maker)
+
         if token != Setting.get_token():
             res.body = "Invalid token ID."
             res.content_type = "String"
@@ -66,6 +74,7 @@ class DataObject(object):
             res.status = falcon.HTTP_400
 
         else:
+            # Push features into the database
             content = req.stream.read().decode('utf-8')
             if not len(content):
                 res.body = "Feature content is required."
@@ -73,11 +82,14 @@ class DataObject(object):
                 res.status = falcon.HTTP_400
             else:
                 # Push data into database
+                pass
+                """
                 if self.__meta_storage.set_meta_by_key(_id,
                                                        content, # Features
                                                        realization,
                                                        label,
                                                        maker):
+
                     res.body = "Insert feature complete."
                     res.content_type = "String"
                     res.status = falcon.HTTP_200
@@ -85,6 +97,7 @@ class DataObject(object):
                     res.body = "Insert feature error."
                     res.content_type = "String"
                     res.status = falcon.HTTP_429
+                """
 
     def on_put(self, req, res):
         raise Exception("Have not implemented yet!")
