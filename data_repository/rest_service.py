@@ -52,14 +52,16 @@ class DataObject(object):
         """
         # parse the parameters
         token = req.params[df.Rest.get_string_request_token()].strip()
-        realization = req.params[df.Rest.get_string_realization()].strip()
+        r_path = req.params[df.Rest.get_string_realization()].strip()
         _id = req.params[df.Rest.get_string_id()].strip()
         label = req.params[df.Rest.get_string_label()].strip()
         maker = req.params[df.Rest.get_string_maker()].strip()
+        prev_id = 'dummy.com/sample_' + _id
 
         print("Token:", token)
-        print("Realization: ", realization)
+        print("Realization: ", r_path)
         print("_id: ", _id)
+        print("prev_id: ", prev_id)
         print("label: ", label)
         print("maker: ", maker)
 
@@ -68,7 +70,7 @@ class DataObject(object):
             res.content_type = "String"
             res.status = falcon.HTTP_401
 
-        elif not len(realization) and not len(_id) and not len(label) and not len(maker):
+        elif not len(r_path) and not len(_id) and not len(label) and not len(maker):
             res.body = "Incomplete data for some required parameters."
             res.content_type = "String"
             res.status = falcon.HTTP_400
@@ -76,8 +78,8 @@ class DataObject(object):
         else:
             # Push features into the database
             content = req.stream.read()
-            f_name = str(_id) + ".p.zip"
-            with open(Setting.get_local_storage() + '/' + f_name, 'wb') as w:
+            f_path = df.Feature.get_feature_name(_id)
+            with open(Setting.get_local_storage() + f_path, 'wb') as w:
                 w.write(content)
 
             if not len(content):
@@ -86,14 +88,12 @@ class DataObject(object):
                 res.status = falcon.HTTP_400
             else:
                 # Push data into database
-                pass
-                """
                 if self.__meta_storage.set_meta_by_key(_id,
-                                                       content, # Features
-                                                       realization,
-                                                       label,
-                                                       maker):
-
+                                                       prev_id,
+                                                       f_path,
+                                                       r_path,
+                                                       maker,
+                                                       label):
                     res.body = "Insert feature complete."
                     res.content_type = "String"
                     res.status = falcon.HTTP_200
@@ -101,7 +101,6 @@ class DataObject(object):
                     res.body = "Insert feature error."
                     res.content_type = "String"
                     res.status = falcon.HTTP_429
-                """
 
     def on_put(self, req, res):
         raise Exception("Have not implemented yet!")

@@ -7,7 +7,7 @@
     "db_features": "features",
     "db_tree": "tree",
     "db_meta": "meta",
-    "db_storage": "/home/ubuntu/storage"
+    "db_storage": "/home/ubuntu/storage/"
   },
   "token": "None"
 }

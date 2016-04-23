@@ -121,6 +121,10 @@ class Definitions(object):
     class Feature(object):
 
         @staticmethod
+        def get_feature_name(_id):
+            return str(_id) + '.p.zip'
+
+        @staticmethod
         def get_string_feature():
             return 'features'
 
