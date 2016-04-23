@@ -76,7 +76,8 @@ class DataObject(object):
         else:
             # Push features into the database
             content = req.stream.read()
-            with open(Setting.get_local_storage() + '/' + str(_id) + ".p.zip", 'wb') as w:
+            f_name = str(_id) + ".p.zip"
+            with open(Setting.get_local_storage() + '/' + f_name, 'wb') as w:
                 w.write(content)
 
             if not len(content):
