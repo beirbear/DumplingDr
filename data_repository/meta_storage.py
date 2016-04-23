@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from .configuration import Setting
 from .configuration import Definitions
+import io
+import tarfile
 
 
 class MetaStorage(object):
@@ -25,12 +27,23 @@ class MetaStorage(object):
         return self.__db[Setting.get_table_name()].count()
 
     def get_all_features(self):
+
+        c = io.BytesIO()
         cursor = self.__db[Setting.get_table_name()].find()
-        out = {}
+        out = tarfile.open(fileobj=c, mode='w')
+
         for item in cursor:
-            out[int(item['id'])] = item['features']
-        return out
-        # return [(item['id'], item['features']) for item in cursor]
+            try:
+                info = tarfile.TarInfo(item[Definitions.MongoDB.Features.get_string_feature_path()])
+                with open(Setting.get_local_storage() +
+                          item[Definitions.MongoDB.Features.get_string_feature_path()], 'rb') as t:
+                    data = t.read()
+                info.size = len(data)
+                out.addfile(info, data)
+            finally:
+                out.close()
+
+        return c
 
     def get_all_data(self):
         cursor = self.__db[Setting.get_table_name()].find()
