@@ -33,15 +33,18 @@ class MetaStorage(object):
         out = tarfile.open(fileobj=c, mode='w')
 
         for item in cursor:
+            """
             try:
                 info = tarfile.TarInfo(item[Definitions.MongoDB.Features.get_string_feature_path()])
                 with open(Setting.get_local_storage() +
                           item[Definitions.MongoDB.Features.get_string_feature_path()], 'rb') as t:
                     data = t.read()
                 info.size = len(data)
-                out.addfile(info, data)
+                out.addfi(info, data)
             finally:
                 out.close()
+            """
+            out.add(item[Definitions.MongoDB.Features.get_string_feature_path()])
 
         return c
 

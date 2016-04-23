@@ -35,8 +35,8 @@ class DataObject(object):
              req.params[df.Rest.get_string_req_command()] == df.Rest.get_string_dump_features():
             # Get only features
 
-            res.data = self.__meta_storage.get_all_features()
-            # res.content_type = "Byte"
+            res.data = self.__meta_storage.get_all_features().getvalue()
+            res.content_type = "Byte"
             res.status = falcon.HTTP_200
 
         else:
