@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from .configuration import Setting
-from datetime import datetime
+from .configuration import Definitions
 
 
 class MetaStorage(object):
@@ -12,17 +12,9 @@ class MetaStorage(object):
     def total_keys(self):
         raise Exception("Have not implement exception")
 
-    def set_meta_by_key(self, object_id, realization_features, realization_path, realization_label, created_by):
-        res = self.__db[Setting.get_table_name()].insert_one({
-            "id": object_id,
-            "features": realization_features,
-            "realizations": realization_path,
-            "label": realization_label,
-            "created_by": created_by,
-            "created_time": datetime.now(),
-            "last_updated": datetime.now(),
-            "is_enable": True
-        })
+    def set_meta_by_key(self, _id, prev_id, f_path, r_path, created_by, is_labeled):
+        res = self.__db[Setting.get_table_name()].insert_one(
+              Definitions.MongoDB.Features.get_dict_record(_id, prev_id, f_path, r_path, created_by, is_labeled))
 
         if res.inserted_id:
             return True

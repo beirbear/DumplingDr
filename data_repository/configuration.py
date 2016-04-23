@@ -1,3 +1,4 @@
+import datetime
 
 
 class Setting(object):
@@ -165,6 +166,19 @@ class Definitions(object):
             @staticmethod
             def get_string_is_enabled():
                 return 'is_enabled'
+
+            @staticmethod
+            def get_dict_record(_id, prev_id, feature_path, realization_path, created_by, is_labeled):
+                return {
+                    Definitions.MongoDB.Features.get_string_id(): _id,
+                    Definitions.MongoDB.Features.get_string_previous_id(): prev_id,
+                    Definitions.MongoDB.Features.get_string_feature_path(): feature_path,
+                    Definitions.MongoDB.Features.get_string_realization_path(): realization_path,
+                    Definitions.MongoDB.Features.get_string_created_by(): created_by,
+                    Definitions.MongoDB.Features.get_string_created_date(): datetime.datetime.now(),
+                    Definitions.MongoDB.Features.get_string_is_labeled(): is_labeled,
+                    Definitions.MongoDB.Features.get_string_is_enabled(): True
+                }
 
         class Tree(object):
             @staticmethod
