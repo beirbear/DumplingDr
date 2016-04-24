@@ -259,9 +259,9 @@ class LabelObject(object):
                     res.status = 200
 
                 else:
-                    res.body = "Invalid requested command."
+                    res.body = str(self.__meta_storage.dump_meta_table())
                     res.content_type = "String"
-                    res.status = falcon.HTTP_400
+                    res.status = falcon.HTTP_200
 
             else:
                 res.body = "No command specified"

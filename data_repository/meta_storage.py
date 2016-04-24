@@ -11,8 +11,8 @@ class MetaStorage(object):
     This class encapsulate the connection between application and mongodb.
     Just call this class for mongodb communication.
     It should be singleton, but there might be a case for multiple data connection,
-    such as to multiple remote data source. So, I just keep it simple stupid for now
-    because I am still not sure about the further change.
+    such as to multiple remote data source. So, I just keep it this way for now
+    because I am still not sure about the further change. We might need to interface.
     """
 
     def __init__(self):
@@ -98,12 +98,17 @@ class MetaStorage(object):
 
         # Insert records into linkage matrix
         for l_node, r_node, distance, clust_num in content:
-            self.__db[Setting.get_string_table_linkage_matrix()].insert_one({
-                Definitions.MongoDB.LinkageMatrix.get_string_left_child(): l_node,
-                Definitions.MongoDB.LinkageMatrix.get_string_right_child(): r_node,
-                Definitions.MongoDB.LinkageMatrix.get_string_proximity(): distance,
-                Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes(): clust_num
-            })
+            res = self.__db[Setting.get_string_table_linkage_matrix()].insert_one({
+                    Definitions.MongoDB.LinkageMatrix.get_string_left_child(): l_node,
+                    Definitions.MongoDB.LinkageMatrix.get_string_right_child(): r_node,
+                    Definitions.MongoDB.LinkageMatrix.get_string_proximity(): distance,
+                    Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes(): clust_num
+                    })
+
+        if res.inserted_id:
+            return True
+
+        return False
 
     def set_labeled_tree(self, content):
         """
@@ -166,6 +171,18 @@ class MetaStorage(object):
 
         cursor = self.__db[Setting.get_string_table_meta_name()].find({
             Definitions.MongoDB.Meta.get_string_name(): value})
+
+        return [item for item in cursor]
+
+    def dump_meta_table(self):
+        """
+        Purpose: get everything in the meta table
+        :return: query result (String)
+        """
+        if Setting.get_string_table_meta_name() not in self.__db.collection_names():
+            return "Table has not been created yet."
+
+        cursor = self.__db[Setting.get_string_table_meta_name()].find()
 
         return [item for item in cursor]
 
