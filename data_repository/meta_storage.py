@@ -74,6 +74,8 @@ class MetaStorage(object):
         Purpose: dump every records to see the content inside the feature table.
         :return: records in the feature table.
         """
+        if Setting.get_string_table_feature() not in self.__db.collection_names():
+            return "Table has not been created yet."
 
         cursor = self.__db[Setting.get_string_table_feature()].find()
         return [item for item in cursor]
@@ -145,6 +147,9 @@ class MetaStorage(object):
         Purpose: dump the linkage matrix
         :return:
         """
+        if Setting.get_string_table_linkage_matrix() not in self.__db.collection_names():
+            return "Table has not been created yet."
+
         cursor = self.__db[Setting.get_string_table_linkage_matrix()].find()
 
         return [item for item in cursor]
@@ -155,6 +160,9 @@ class MetaStorage(object):
         :param value: parameter name
         :return: query result
         """
+        if Setting.get_string_table_meta_name() not in self.__db.collection_names():
+            return "Table has not been created yet."
+
         cursor = self.__db[Setting.get_string_table_meta_name()].find({
             Definitions.MongoDB.Meta.get_string_name(): value})
 
