@@ -241,7 +241,7 @@ class LabelObject(object):
                     res.body = str(self.__meta_storage.dump_linkage_matrix())
 
                     res.content_type = "String"
-                    res.status = 200
+                    res.status = falcon.HTTP_200
 
                 elif df.DataLabels.get_string_command_tree() == command:
                     """GET: /dataLabels?command={labeled_tree}&token={None}"""
@@ -249,7 +249,7 @@ class LabelObject(object):
                     res.body = str(self.__meta_storage.get_value_from_meta_table(
                                df.DataLabels.get_string_command_tree()))
                     res.content_type = "String"
-                    res.status = 200
+                    res.status = falcon.HTTP_200
 
                 elif df.DataLabels.get_string_command_row_idx() == command:
                     """GET: /dataLabels?command={row_index}&token={None}"""
@@ -257,14 +257,14 @@ class LabelObject(object):
                     res.body = str(self.__meta_storage.get_value_from_meta_table(
                                df.DataLabels.get_string_command_row_idx()))
                     res.content_type = "String"
-                    res.status = 200
+                    res.status = falcon.HTTP_200
 
                 elif df.DataLabels.get_string_command_dump_meta() == command:
                     """GET: /dataLabels?command={row_index}&token={meta_all}"""
                     # Get row index
                     res.body = str(self.__meta_storage.dump_meta_table())
                     res.content_type = "String"
-                    res.status = 200
+                    res.status = falcon.HTTP_200
 
                 else:
                     res.body = "Invalid command"

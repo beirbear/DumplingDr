@@ -193,8 +193,8 @@ class MetaStorage(object):
 
         res = []
         for item in cursor:
-            res += [str(item[Definitions.MongoDB.Meta.get_string_name()]),
-                    str(item[Definitions.MongoDB.Meta.get_string_value()])]
+            res += [item[Definitions.MongoDB.Meta.get_string_name()],
+                    eval(item[Definitions.MongoDB.Meta.get_string_value()])]
 
         return res
 
