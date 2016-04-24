@@ -260,7 +260,7 @@ class LabelObject(object):
                     res.status = falcon.HTTP_200
 
                 elif df.DataLabels.get_string_command_dump_meta() == command:
-                    """GET: /dataLabels?command={row_index}&token={meta_all}"""
+                    """GET: /dataLabels?command={meta_all}&token={None}"""
                     # Get row index
                     res.body = str(self.__meta_storage.dump_meta_table())
                     res.content_type = "String"
