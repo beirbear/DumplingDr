@@ -66,6 +66,14 @@ class Setting(object):
         return Setting.__table_name
 
     @staticmethod
+    def get_table_tree_name():
+        return Setting.__table_tree_name
+
+    @staticmethod
+    def get_table_meta_name():
+        return Setting.__table_meta_name
+
+    @staticmethod
     def get_db_connection_string():
         return Setting.__db_connection_string
 
@@ -117,6 +125,28 @@ class Definitions(object):
         @staticmethod
         def get_string_maker():
             return 'created_by'
+
+    class DataLabels(object):
+
+        @staticmethod
+        def get_string_service_path():
+            return 'dataLabels'
+
+        @staticmethod
+        def get_string_command():
+            return 'command'
+
+        @staticmethod
+        def get_string_command_dist_m():
+            return 'linkage_matrix'
+
+        @staticmethod
+        def get_string_command_tree():
+            return 'labeled_tree'
+
+        @staticmethod
+        def get_string_command_row_idx():
+            return 'row_index'
 
     class Feature(object):
 
@@ -185,9 +215,6 @@ class Definitions(object):
                 }
 
         class Tree(object):
-            @staticmethod
-            def get_string_parent():
-                return 'parent'
 
             @staticmethod
             def get_string_left_child():
@@ -202,8 +229,8 @@ class Definitions(object):
                 return 'proximity'
 
             @staticmethod
-            def get_string_name():
-                return 'name'
+            def get_string_num_of_nodes():
+                return 'members_num'
 
         class Meta(object):
             @staticmethod

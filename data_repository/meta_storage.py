@@ -3,6 +3,7 @@ from .configuration import Setting
 from .configuration import Definitions
 import io
 import tarfile
+import datetime
 
 
 class MetaStorage(object):
@@ -33,19 +34,8 @@ class MetaStorage(object):
         out = tarfile.open(fileobj=c, mode='w')
 
         for item in cursor:
-            """
-            try:
-                info = tarfile.TarInfo(item[Definitions.MongoDB.Features.get_string_feature_path()])
-                with open(Setting.get_local_storage() +
-                          item[Definitions.MongoDB.Features.get_string_feature_path()], 'rb') as t:
-                    data = t.read()
-                info.size = len(data)
-                out.addfi(info, data)
-            finally:
-                out.close()
-            """
-            out.add(item[Definitions.MongoDB.Features.get_string_feature_path()])
-
+            out.add(Setting.get_local_storage() + item[Definitions.MongoDB.Features.get_string_feature_path()])
+        out.close()
         return c
 
     def get_all_data(self):
@@ -60,3 +50,34 @@ class MetaStorage(object):
 
     def drop_table(self):
         self.__db[Setting.get_table_name()].drop()
+
+    # -----------------------------------------
+    def set_distance_matrix(self, content):
+        res = self.__db[Setting.get_table_tree_name()].insert(content)
+
+        if res.inserted_id:
+            return True
+
+        return False
+
+    def set_labeled_tree(self, content):
+        res = self.__db[Setting.get_table_meta_name()].insert_one({
+            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_tree(),
+            Definitions.MongoDB.Meta.get_string_value(): content,
+            Definitions.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
+
+        if res.inserted_id:
+            return True
+
+        return False
+
+    def set_row_index(self, content):
+        res = self.__db[Setting.get_table_meta_name()].insert_one({
+            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_row_idx(),
+            Definitions.MongoDB.Meta.get_string_value(): content,
+            Definitions.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
+
+        if res.inserted_id:
+            return True
+
+        return False

@@ -121,6 +121,75 @@ class DataObject(object):
             res.status = falcon.HTTP_200
 
 
+class LabelObject(object):
+    def __init__(self, meta_storage):
+        self.__meta_storage = meta_storage
+
+    def on_get(self, req, res):
+        """
+        GET: /dataLabels?command={distance_matrix|labeled_tree|row_index}&token={None}
+        :param req:
+        :param res:
+        :return:
+        """
+        token_value = req.params[df.Rest.get_string_request_token()].strip()
+        if token_value == Setting.get_token():
+            command = req.params[df.DataLabels.get_string_command()].strip()
+            if df.DataLabels.get_string_command_dist_m() == command:
+                # Get distance matrix
+                pass
+            elif df.DataLabels.get_string_command_tree() == command:
+                # Get tree structure
+                pass
+            elif df.DataLabels.get_string_command_row_idx() == command:
+                # Get row index
+                pass
+            else:
+                res.body = "Invalid requested command."
+                res.content_type = "String"
+                res.status = falcon.HTTP_400
+
+        else:
+            res.body = "Invalid token ID."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+
+    def on_post(self, req, res):
+        """
+        POST: /dataLabels?command={distance_matrix|labeled_tree|row_index}&token={None}
+        """
+        token_value = req.params[df.Rest.get_string_request_token()].strip()
+        if token_value == Setting.get_token():
+            command = req.params[df.DataLabels.get_string_command()].strip()
+            content = req.stream.read()
+            is_okay = True
+            if df.DataLabels.get_string_command_dist_m() == command:
+                # Convert test to list
+                if not self.__meta_storage.set_distance_matrix(eval(content)):
+                    is_okay = False
+            elif df.DataLabels.get_string_command_tree() == command:
+                # Get tree structure
+                if not self.__meta_storage.set_labeled_tree(content):
+                    is_okay = False
+            elif df.DataLabels.get_string_command_row_idx() == command:
+                # Get row index
+                if not self.__meta_storage.set_row_index(content):
+                    is_okay = False
+            else:
+                res.body = "Invalid requested command."
+                res.content_type = "String"
+                res.status = falcon.HTTP_400
+
+            if not is_okay:
+                res.body = "Insert feature error."
+                res.content_type = "String"
+                res.status = falcon.HTTP_429
+        else:
+            res.body = "Invalid token ID."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+
+
 class RESTService(object):
     def __init__(self):
         from wsgiref.simple_server import make_server
