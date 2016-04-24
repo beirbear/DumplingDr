@@ -236,7 +236,7 @@ class LabelObject(object):
 
                 command = req.params[df.DataLabels.get_string_command()].strip()
                 if df.DataLabels.get_string_command_linkakge_m() == command:
-                    """GET: /dataLabels?command={distance_matrix}&token={None}"""
+                    """GET: /dataLabels?command={linkage_matrix}&token={None}"""
                     # Get distance matrix
                     res.body = str(self.__meta_storage.dump_linkage_matrix())
                     res.content_type = "String"
@@ -258,10 +258,18 @@ class LabelObject(object):
                     res.content_type = "String"
                     res.status = 200
 
-                else:
-                    res.body = str(self.__meta_storage.dump_meta_table())
+                elif df.DataLabels.get_string_command_dump_meta() == command:
+                    """GET: /dataLabels?command={row_index}&token={All}"""
+                    # Get row index
+                    res.body = str(self.__meta_storage.get_value_from_meta_table(
+                        df.DataLabels.get_string_command_row_idx()))
                     res.content_type = "String"
-                    res.status = falcon.HTTP_200
+                    res.status = 200
+
+                else:
+                    res.body = "Invalid command"
+                    res.content_type = "String"
+                    res.status = falcon.HTTP_400
 
             else:
                 res.body = "No command specified"

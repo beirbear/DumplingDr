@@ -148,6 +148,10 @@ class Definitions(object):
         def get_string_command_row_idx():
             return 'row_index'
 
+        @staticmethod
+        def get_string_command_dump_meta():
+            return 'all'
+
     class Feature(object):
 
         @staticmethod
