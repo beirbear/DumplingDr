@@ -331,7 +331,7 @@ class LabelObject(object):
             if not is_okay:
                 res.body = "Insert data error."
                 res.content_type = "String"
-                res.status = falcon.HTTP_429
+                res.status = falcon.HTTP_400
             else:
                 res.body = "Insert or Update completed."
                 res.content_type = "String"

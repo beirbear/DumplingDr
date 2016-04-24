@@ -93,7 +93,8 @@ class MetaStorage(object):
 
         """ Truncate the existing data """
         # Truncate the table first
-        self.__db[Setting.get_string_table_linkage_matrix()].drop()
+        if Setting.get_string_table_linkage_matrix() in self.__db.collection_names():
+            self.__db[Setting.get_string_table_linkage_matrix()].drop()
 
         # Insert records into linkage matrix
         for l_node, r_node, distance, clust_num in content:
