@@ -160,10 +160,10 @@ class MetaStorage(object):
 
         res = []
         for item in cursor:
-            res += [item[Definitions.MongoDB.LinkageMatrix.get_string_left_child()],
-                    item[Definitions.MongoDB.LinkageMatrix.get_string_right_child()],
-                    item[Definitions.MongoDB.LinkageMatrix.get_string_proximity()],
-                    item[Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes()]]
+            res += [str(item[Definitions.MongoDB.LinkageMatrix.get_string_left_child()]),
+                    str(item[Definitions.MongoDB.LinkageMatrix.get_string_right_child()]),
+                    str(item[Definitions.MongoDB.LinkageMatrix.get_string_proximity()]),
+                    str(item[Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes()])]
 
         return res
 
@@ -193,8 +193,8 @@ class MetaStorage(object):
 
         res = []
         for item in cursor:
-            res += [item[Definitions.MongoDB.Meta.get_string_name()],
-                    item[Definitions.MongoDB.Meta.get_string_value()]]
+            res += [str(item[Definitions.MongoDB.Meta.get_string_name()]),
+                    str(item[Definitions.MongoDB.Meta.get_string_value()])]
 
         return res
 

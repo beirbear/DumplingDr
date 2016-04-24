@@ -238,30 +238,31 @@ class LabelObject(object):
                 if df.DataLabels.get_string_command_linkakge_m() == command:
                     """GET: /dataLabels?command={linkage_matrix}&token={None}"""
                     # Get distance matrix
-                    res.data = self.__meta_storage.dump_linkage_matrix()
+                    res.body = str(self.__meta_storage.dump_linkage_matrix())
+
                     res.content_type = "Byte"
                     res.status = 200
 
                 elif df.DataLabels.get_string_command_tree() == command:
                     """GET: /dataLabels?command={labeled_tree}&token={None}"""
                     # Get tree structure
-                    res.data = self.__meta_storage.get_value_from_meta_table(
-                               df.DataLabels.get_string_command_tree())
+                    res.body = str(self.__meta_storage.get_value_from_meta_table(
+                               df.DataLabels.get_string_command_tree()))
                     res.content_type = "Byte"
                     res.status = 200
 
                 elif df.DataLabels.get_string_command_row_idx() == command:
                     """GET: /dataLabels?command={row_index}&token={None}"""
                     # Get row index
-                    res.data = self.__meta_storage.get_value_from_meta_table(
-                               df.DataLabels.get_string_command_row_idx())
+                    res.body = str(self.__meta_storage.get_value_from_meta_table(
+                               df.DataLabels.get_string_command_row_idx()))
                     res.content_type = "Byte"
                     res.status = 200
 
                 elif df.DataLabels.get_string_command_dump_meta() == command:
                     """GET: /dataLabels?command={row_index}&token={meta_all}"""
                     # Get row index
-                    res.data = self.__meta_storage.dump_meta_table()
+                    res.body = str(self.__meta_storage.dump_meta_table())
                     res.content_type = "Byte"
                     res.status = 200
 
