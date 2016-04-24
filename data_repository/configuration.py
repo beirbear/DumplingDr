@@ -62,16 +62,16 @@ class Setting(object):
         return Setting.__db_name
 
     @staticmethod
-    def get_table_name():
+    def get_string_table_feature():
         return Setting.__table_name
 
     @staticmethod
-    def get_table_tree_name():
-        return Setting.__table_tree_name
+    def get_string_table_meta_name():
+        return Setting.__table_meta_name
 
     @staticmethod
-    def get_table_meta_name():
-        return Setting.__table_meta_name
+    def get_string_table_linkage_matrix():
+        return Setting.__table_tree_name
 
     @staticmethod
     def get_db_connection_string():
@@ -137,7 +137,7 @@ class Definitions(object):
             return 'command'
 
         @staticmethod
-        def get_string_command_dist_m():
+        def get_string_command_linkakge_m():
             return 'linkage_matrix'
 
         @staticmethod
@@ -214,7 +214,7 @@ class Definitions(object):
                     Definitions.MongoDB.Features.get_string_is_enabled(): True
                 }
 
-        class Tree(object):
+        class LinkageMatrix(object):
 
             @staticmethod
             def get_string_left_child():
@@ -244,21 +244,3 @@ class Definitions(object):
             @staticmethod
             def get_string_last_update():
                 return 'last_update'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

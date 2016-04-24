@@ -7,16 +7,36 @@ import datetime
 
 
 class MetaStorage(object):
+    """
+    This class encapsulate the connection between application and mongodb.
+    Just call this class for mongodb communication.
+    It should be singleton, but there might be a case for multiple data connection,
+    such as to multiple remote data source. So, I just keep it simple stupid for now
+    because I am still not sure about the further change.
+    """
+
     def __init__(self):
-        self.__client = MongoClient(Setting.get_db_connection_string())
-        self.__db = self.__client[Setting.get_database_name()]
+        # Create a mongodb client and test the connection
+        try:
+            self.__client = MongoClient(Setting.get_db_connection_string())
+            self.__db = self.__client[Setting.get_database_name()]
+        except Exception as e:
+            print("""\Create database connection error.
+                     \Please make sure the mongodb server is running""" + '\n' + str(e))
+            exit(-1)
 
-    @property
-    def total_keys(self):
-        raise Exception("Have not implement exception")
-
-    def set_meta_by_key(self, _id, prev_id, f_path, r_path, created_by, is_labeled):
-        res = self.__db[Setting.get_table_name()].insert_one(
+    def insert_feature(self, _id, prev_id, f_path, r_path, created_by, is_labeled):
+        """
+        Purpose: insert the feature and its link to the database.
+        :param _id: the id of the feature. It must be number and generate from server side.
+        :param prev_id: the full link that we can trace back to the stream request.
+        :param f_path: feature path (link to the local storage of the file in data repository).
+        :param r_path: realization path that stores in the HDFS or swift.
+        :param created_by: the num of the process which initiate the stream.
+        :param is_labeled: status that indicate that does this feature has been clustered.
+        :return: Success or Fail
+        """
+        res = self.__db[Setting.get_string_table_feature()].insert_one(
               Definitions.MongoDB.Features.get_dict_record(_id, prev_id, f_path, r_path, created_by, is_labeled))
 
         if res.inserted_id:
@@ -24,44 +44,74 @@ class MetaStorage(object):
 
         return False
 
-    def count_records(self):
-        return self.__db[Setting.get_table_name()].count()
+    def count_total_features(self):
+        """
+        Purpose: count the total record
+        :return: number of total features
+        """
+        return self.__db[Setting.get_string_table_feature()].count()
 
     def get_all_features(self):
+        """
+        Purpose: dump all features file into tarball for processing in the knowledge discovery node.
+        :return:
+        """
 
-        c = io.BytesIO()
-        cursor = self.__db[Setting.get_table_name()].find()
-        out = tarfile.open(fileobj=c, mode='w')
+        # In-memory tarball
+        tar_byte = io.BytesIO()
+        cursor = self.__db[Setting.get_string_table_feature()].find()
+        out = tarfile.open(fileobj=tar_byte, mode='w')
 
+        # Tarball every file at the moment
         for item in cursor:
             out.add(Setting.get_local_storage() + item[Definitions.MongoDB.Features.get_string_feature_path()])
         out.close()
-        return c
 
-    def get_all_data(self):
-        cursor = self.__db[Setting.get_table_name()].find()
+        return tar_byte
+
+    def dump_feature_table(self):
+        """
+        Purpose: dump every records to see the content inside the feature table.
+        :return: records in the feature table.
+        """
+
+        cursor = self.__db[Setting.get_string_table_feature()].find()
         return [item for item in cursor]
 
-    def get_meta_from_key(self, object_id):
-        raise Exception("Have not implement exception")
+    def drop_feature_table(self):
+        """
+        Purpose: drop feature table
+        """
+        self.__db[Setting.get_string_table_feature()].drop()
 
-    def is_key_exist(self, object_id):
-        raise Exception("Have not implement exception")
+    def set_linkage_matrix(self, content):
+        """
+        Purpose: set feature table
+        """
 
-    def drop_table(self):
-        self.__db[Setting.get_table_name()].drop()
+        """ Truncate the existing data """
+        # Truncate the table first
+        self.__db[Setting.get_string_table_linkage_matrix()].drop()
 
-    # -----------------------------------------
-    def set_distance_matrix(self, content):
-        res = self.__db[Setting.get_table_tree_name()].insert(content)
-
-        if res.inserted_id:
-            return True
-
-        return False
+        # Insert records into linkage matrix
+        for l_node, r_node, distance, clust_num in content:
+            self.__db[Setting.get_string_table_linkage_matrix()].insert_one({
+                Definitions.MongoDB.LinkageMatrix.get_string_left_child(): l_node,
+                Definitions.MongoDB.LinkageMatrix.get_string_right_child(): r_node,
+                Definitions.MongoDB.LinkageMatrix.get_string_proximity(): distance,
+                Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes(): clust_num
+            })
 
     def set_labeled_tree(self, content):
-        res = self.__db[Setting.get_table_meta_name()].insert_one({
+        """
+        Purpose: insert or replace the content about tree label name
+        :param content: tree name
+        :return: Success or Fail
+        """
+        self.__db[Setting.get_string_table_meta_name()].remove({
+            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_tree()})
+
+        res = self.__db[Setting.get_string_table_meta_name()].insert_one({
             Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_tree(),
             Definitions.MongoDB.Meta.get_string_value(): content,
             Definitions.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
@@ -72,7 +122,15 @@ class MetaStorage(object):
         return False
 
     def set_row_index(self, content):
-        res = self.__db[Setting.get_table_meta_name()].insert_one({
+        """
+        Purpose: insert or replace the content about row_index
+        :param content: row_index
+        :return: Success or Fail
+        """
+        self.__db[Setting.get_string_table_meta_name()].remove({
+            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_row_idx()})
+
+        res = self.__db[Setting.get_string_table_meta_name()].insert_one({
             Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_row_idx(),
             Definitions.MongoDB.Meta.get_string_value(): content,
             Definitions.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
@@ -81,3 +139,27 @@ class MetaStorage(object):
             return True
 
         return False
+
+    def dump_linkage_matrix(self):
+        """
+        Purpose: dump the linkage matrix
+        :return:
+        """
+        cursor = self.__db[Setting.get_string_table_linkage_matrix()].find()
+
+        return [item for item in cursor]
+
+    def get_value_from_meta_table(self, value):
+        """
+        Purpose: query the data in meta table and return
+        :param value: parameter name
+        :return: query result
+        """
+        cursor = self.__db[Setting.get_string_table_meta_name()].find({
+            Definitions.MongoDB.Meta.get_string_name(): value})
+
+        return [item for item in cursor]
+
+    @property
+    def total_keys(self):
+        raise Exception("Have not implement exception")
