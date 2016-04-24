@@ -150,7 +150,7 @@ class Definitions(object):
 
         @staticmethod
         def get_string_command_dump_meta():
-            return 'all'
+            return 'meta_all'
 
     class Feature(object):
 
