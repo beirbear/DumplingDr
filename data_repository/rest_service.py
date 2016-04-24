@@ -240,7 +240,7 @@ class LabelObject(object):
                     # Get distance matrix
                     res.body = str(self.__meta_storage.dump_linkage_matrix())
 
-                    res.content_type = "Byte"
+                    res.content_type = "String"
                     res.status = 200
 
                 elif df.DataLabels.get_string_command_tree() == command:
@@ -248,7 +248,7 @@ class LabelObject(object):
                     # Get tree structure
                     res.body = str(self.__meta_storage.get_value_from_meta_table(
                                df.DataLabels.get_string_command_tree()))
-                    res.content_type = "Byte"
+                    res.content_type = "String"
                     res.status = 200
 
                 elif df.DataLabels.get_string_command_row_idx() == command:
@@ -256,14 +256,14 @@ class LabelObject(object):
                     # Get row index
                     res.body = str(self.__meta_storage.get_value_from_meta_table(
                                df.DataLabels.get_string_command_row_idx()))
-                    res.content_type = "Byte"
+                    res.content_type = "String"
                     res.status = 200
 
                 elif df.DataLabels.get_string_command_dump_meta() == command:
                     """GET: /dataLabels?command={row_index}&token={meta_all}"""
                     # Get row index
                     res.body = str(self.__meta_storage.dump_meta_table())
-                    res.content_type = "Byte"
+                    res.content_type = "String"
                     res.status = 200
 
                 else:
