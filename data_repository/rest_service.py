@@ -259,10 +259,9 @@ class LabelObject(object):
                     res.status = 200
 
                 elif df.DataLabels.get_string_command_dump_meta() == command:
-                    """GET: /dataLabels?command={row_index}&token={All}"""
+                    """GET: /dataLabels?command={row_index}&token={meta_all}"""
                     # Get row index
-                    res.body = str(self.__meta_storage.get_value_from_meta_table(
-                        df.DataLabels.get_string_command_row_idx()))
+                    res.body = str(self.__meta_storage.dump_meta_table())
                     res.content_type = "String"
                     res.status = 200
 
