@@ -158,7 +158,11 @@ class MetaStorage(object):
 
         cursor = self.__db[Setting.get_string_table_linkage_matrix()].find()
 
-        return [item for item in cursor]
+        return [[item[Definitions.MongoDB.LinkageMatrix.get_string_left_child()],
+                 item[Definitions.MongoDB.LinkageMatrix.get_string_right_child()],
+                 item[Definitions.MongoDB.LinkageMatrix.get_string_proximity()],
+                 item[Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes()]]
+                for item in cursor]
 
     def get_value_from_meta_table(self, value):
         """
@@ -172,7 +176,9 @@ class MetaStorage(object):
         cursor = self.__db[Setting.get_string_table_meta_name()].find({
             Definitions.MongoDB.Meta.get_string_name(): value})
 
-        return [item for item in cursor]
+        return [[item[Definitions.MongoDB.Meta.get_string_name()],
+                item[Definitions.MongoDB.Meta.get_string_value()]]
+                for item in cursor]
 
     def dump_meta_table(self):
         """
