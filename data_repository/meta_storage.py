@@ -190,17 +190,20 @@ class MetaStorage(object):
         Purpose: get everything in the meta table
         :return: query result (String)
         """
-        if Setting.get_string_table_meta_name() not in self.__db.collection_names():
-            return "Table has not been created yet."
+        try:
+            if Setting.get_string_table_meta_name() not in self.__db.collection_names():
+                return "Table has not been created yet."
 
-        cursor = self.__db[Setting.get_string_table_meta_name()].find()
+            cursor = self.__db[Setting.get_string_table_meta_name()].find()
 
-        res = []
-        for item in cursor:
-            res += [item[Definitions.MongoDB.Meta.get_string_name()],
-                    eval(item[Definitions.MongoDB.Meta.get_string_value()])]
+            res = []
+            for item in cursor:
+                res += [item[Definitions.MongoDB.Meta.get_string_name()],
+                        eval(item[Definitions.MongoDB.Meta.get_string_value()])]
 
-        return res
+            return res
+        except Exception as e:
+            print("Error, " + str(e))
 
     @property
     def total_keys(self):
