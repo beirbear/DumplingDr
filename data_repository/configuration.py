@@ -88,6 +88,28 @@ class Setting(object):
 
 class Definitions(object):
 
+    class Services(object):
+
+        @staticmethod
+        def get_string_service_path():
+            return 'services'
+
+        @staticmethod
+        def get_string_command():
+            return 'command'
+
+        @staticmethod
+        def get_string_client():
+            return 'client'
+
+        @staticmethod
+        def get_string_client_alias():
+            return 'alias'
+
+        @staticmethod
+        def get_string_client_addr():
+            return 'addr'
+
     class Rest(object):
 
         @staticmethod

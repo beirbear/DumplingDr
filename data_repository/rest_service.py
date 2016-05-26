@@ -1,5 +1,6 @@
 import falcon
 from .configuration import Definitions as df, Setting
+from data_repository.model import Model
 
 
 class DataObject(object):
@@ -350,6 +351,69 @@ class LabelObject(object):
             res.status = falcon.HTTP_401
 
 
+class Services(object):
+    """
+    This class is an intermediate layer that connect to other units in the SPA.
+    """
+    def on_get(self, req, res):
+        pass
+
+    def on_post(self, req, res):
+        """
+        Purpose: Setting the SPA
+        POST: /services?command={client}&token={None}
+        """
+        if df.Rest.get_string_request_token() not in req.params:
+            res.body = "token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return None
+
+        if df.Services.get_string_command() not in req.params:
+            res.body = "Command is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_400
+            return None
+
+        # Extract the parameters
+        token_value = req.params[df.Rest.get_string_request_token()].strip()
+        command_value = req.params[df.Services.get_string_command()].strip()
+
+        if token_value == Setting.get_token():
+
+            # Register client
+            if command_value == df.Services.get_string_client():
+                # Get content in the body
+                content = req.stream.read()
+
+                # Check the content
+                if len(content) == 0:
+                    """ There is no content in the push request.
+                        Respond with error.
+                    """
+                    res.body = "No content present in the body"
+                    res.content_type = "String"
+                    res.status = falcon.HTTP_401
+                    return None
+
+                data = eval(content)
+                if Model.register_client(data):
+                    res.body = "Register client completed."
+                    res.content_type = "String"
+                    res.status = falcon.HTTP_200
+                    return None
+                else:
+                    res.body = "Register client not completed."
+                    res.content_type = "String"
+                    res.status = falcon.HTTP_401
+                    return None
+
+        else:
+            res.body = "Invalid token ID."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+
+
 class RESTService(object):
     """
     Main class for the rest service
@@ -368,7 +432,7 @@ class RESTService(object):
         # Add routing path
         api.add_route('/' + df.Rest.get_string_service_path(), DataObject(meta_storage))
         api.add_route('/' + df.DataLabels.get_string_service_path(), LabelObject(meta_storage))
-
+        api.add_route('/' + df.Services.get_string_service_path(), Services())
         # Bind the service into the system
         self.__server = make_server(Setting.get_com_addr(), Setting.get_com_port(), api)
 
