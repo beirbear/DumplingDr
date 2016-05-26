@@ -8,7 +8,8 @@ class Model(object):
 
     @staticmethod
     def register_client(parameters):
-        import urllib
+        import urllib.request
+        import urllib.error
         import re
 
         def register_client(server_addr, client_name, client_addr):

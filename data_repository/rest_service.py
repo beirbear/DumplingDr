@@ -384,7 +384,7 @@ class Services(object):
             # Register client
             if command_value == df.Services.get_string_client():
                 # Get content in the body
-                content = req.stream.read()
+                content = req.stream.read().strip()
 
                 # Check the content
                 if len(content) == 0:
