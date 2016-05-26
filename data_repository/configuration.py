@@ -3,7 +3,7 @@ import datetime
 
 class Setting(object):
     # REST Setting
-    __com_addr = '10.0.10.248'
+    __com_addr = '192.168.1.205'
     __com_port = 8080
 
     # Mongodb Setting

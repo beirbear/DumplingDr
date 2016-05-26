@@ -1,5 +1,5 @@
 {
-  "rest_addr": "10.0.10.248",
+  "rest_addr": "192.168.1.205",
   "rest_port": 8080,
   "mongodb_setting": {
     "connection_string": "mongodb://localhost:27017/",
